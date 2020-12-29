@@ -11,9 +11,9 @@ VSCode / Visual Studio
 **a C# library that deals with Google Translate REST API. Offers google translate service operations from a C# software**
 
 ```CSharp
-GCl = new GTranslatorAPIClient();
+var gcl = new GTranslatorAPIClient();
 // source language, target language, text to be translated
-var r = GCl.TranslateAsync(Languages.en, Languages.fr, "text to be translated");
+var r = gcl.TranslateAsync(Languages.en, Languages.fr, "text to be translated");
 // translated text
 var res = r.Result; 
 ```
