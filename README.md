@@ -26,9 +26,18 @@ git clone https://github.com/franck-gaspoz/GTranslatorAPI.git
 cd .\GTranslatorAPI\
 code .
 ```
-*then go to Debug Run , select .Net Core motor*, you should get the output:
+*then go Run > Start Debugging , select .Net Core engine*, you should get the output:
 ```Dos
-GTranslator v 1.0.0.0
+GTranslatorAPI command line interface 1.0.0.0
+(c)MIT 2020 franck.gaspoz@gmail.com
+
+command line syntax:
+source_langid target_langid text [-q]
+    source_langid : original text lang id
+    target_langid : translated text lang id
+    -q : turn off all outputs excepting errors
+or
+    -list : dump list of languages ids & names
 ```
 ### from Nuget:
 *coming soon*
