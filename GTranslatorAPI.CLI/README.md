@@ -15,18 +15,6 @@ This project is a sample command line tool built within the library.
 The main documentation of the project is here: [../README.md](../README.md)
 
 
-## Get the tool GTranslateAPI.CLI
-
-### app package from nuget:
-```Dos
-dotnet add package GTranslatorAPI.CLI --version 1.0.0 --source https://www.nuget.org/api/v2/package/
-```
-
-### app package from GitHub:
-```Dos
-dotnet add package GTranslatorAPI.CLI --version 1.0.0 --source https://nuget.pkg.github.com/franck-gaspoz/index.json
-```
-
 <hr>
 
 > ### :information_source: About this repository
