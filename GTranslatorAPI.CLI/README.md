@@ -19,7 +19,7 @@ var res = r.Result;
 ```
 
 ## Get the library
-### from GitHub:
+### source from GitHub:
 ```Dos
 cd myProjects
 git clone https://github.com/franck-gaspoz/GTranslatorAPI.git
@@ -39,8 +39,15 @@ source_langid target_langid text [-q]
 or
     -list : dump list of languages ids & names
 ```
-### from Nuget:
-*coming soon*
+### app package from nuget:
+```Dos
+dotnet add package GTranslatorAPI.CLI --version 1.0.0 --source https://www.nuget.org/api/v2/package/
+```
+
+### app package from GitHub:
+```Dos
+dotnet add package GTranslatorAPI.CLI --version 1.0.0 --source https://nuget.pkg.github.com/franck-gaspoz/index.json
+```
 
 
 <hr>

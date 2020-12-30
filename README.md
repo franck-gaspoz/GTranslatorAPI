@@ -49,6 +49,43 @@ dotnet add package GTranslatorAPI --version 1.0.0 --source https://www.nuget.org
 dotnet add package GTranslatorAPI --version 1.0.0 --source https://nuget.pkg.github.com/franck-gaspoz/index.json
 ```
 
+## Use the library
+let's build a new C# console project for testing the GTranslatorAPI nuget package, using powershell, dotnet and vscode :
+```Dos
+mkdir MyProject
+cd MyProject
+dotnet new console
+dotnet add package GTranslatorAPI --version 1.0.0
+code .
+```
+let's change the default main method in Program.cs, to change its default behavior (output 'Hello world!') by a new one, that **adds a translation of 'Hello world!' to spanish**, using the GTranslatorAPI :
+```C#
+using System;
+using GTranslatorAPI;
+
+namespace MyProject
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = "Hello world!";
+            Console.WriteLine(s);
+            var tr = new GTranslatorAPIClient();
+            var r = tr.TranslateAsync(Languages.en,Languages.es,s);
+            var res = r?.Result;            
+            Console.WriteLine(res?.TranslatedText);    
+            var dbg=$"-- is canceled={r?.IsCanceled},is completed={r?.IsCompleted},is completed successfully={r?.IsCompletedSuccessfully},is faulted={r?.IsFaulted}";
+            Console.WriteLine(dbg);       
+        }
+    }
+}
+
+```
+then run the project (ctrl+F5 | Run > Start without debugging). You should get:
+
+![run sample in vscode](Doc/run.png)
+
 <hr>
 
 > ### :information_source: About this repository
