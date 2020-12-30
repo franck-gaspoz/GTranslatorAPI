@@ -26,6 +26,13 @@ git clone https://github.com/franck-gaspoz/GTranslatorAPI.git
 cd .\GTranslatorAPI\
 code .
 ```
+*then go to Debug Run , select .Net Core motor*, you should get the output:
+```Dos
+GTranslator v 1.0.0.0
+```
+### from Nuget:
+*coming soon*
+
 
 <hr>
 
