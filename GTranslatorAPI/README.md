@@ -10,7 +10,7 @@ VSCode / Visual Studio
 
 **a C# library that deals with Google Translate REST API. Offers google translate service operations from a C# software (with no api token)**
 
-The main documentation of the project is here: [../README.md](http://../README.md)
+The main documentation of the project is here: [../README.md](../README.md)
 
 <hr>
 
