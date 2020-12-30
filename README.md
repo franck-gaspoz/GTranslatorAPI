@@ -20,14 +20,14 @@ var res = r.Result;
 
 ## Get the library
 ### source from GitHub:
-```Dos
+```Shell
 cd myProjects
 git clone https://github.com/franck-gaspoz/GTranslatorAPI.git
 cd .\GTranslatorAPI\
 code .
 ```
 *then go Run > Start Debugging , select .Net Core engine*, you should get the output:
-```Dos
+```Shell
 GTranslatorAPI command line interface 1.0.0.0
 (c)MIT 2020 franck.gaspoz@gmail.com
 
@@ -40,18 +40,18 @@ or
     -list : dump list of languages ids & names
 ```
 ### package from nuget:
-```Dos
+```Shell
 dotnet add package GTranslatorAPI --version 1.0.0 --source https://www.nuget.org/api/v2/package/
 ```
 
 ### package from GitHub:
-```Dos
+```Shell
 dotnet add package GTranslatorAPI --version 1.0.0 --source https://nuget.pkg.github.com/franck-gaspoz/index.json
 ```
 
 ## Use the library
 let's build a new C# console project for testing the GTranslatorAPI nuget package, using powershell, dotnet and vscode :
-```Dos
+```Shell
 mkdir MyProject
 cd MyProject
 dotnet new console
