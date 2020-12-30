@@ -8,7 +8,7 @@ VSCode / Visual Studio
 ![last commit](https://img.shields.io/github/last-commit/franck-gaspoz/GTranslatorAPI?style=plastic)
 ![version](https://img.shields.io/github/v/tag/franck-gaspoz/GTranslatorAPI?style=plastic)
 
-**a C# library that deals with Google Translate REST API. Offers google translate service operations from a C# software**
+**a C# library that deals with Google Translate REST API. Offers google translate service operations from a C# software (with no api token)**
 
 ```CSharp
 var gcl = new GTranslatorAPIClient();
