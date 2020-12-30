@@ -24,6 +24,7 @@ var res = r.Result;
 cd myProjects
 git clone https://github.com/franck-gaspoz/GTranslatorAPI.git
 cd .\GTranslatorAPI\
+code .
 ```
 
 <hr>
