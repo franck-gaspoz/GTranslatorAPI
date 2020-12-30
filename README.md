@@ -18,6 +18,14 @@ var r = gcl.TranslateAsync(Languages.en, Languages.fr, "text to be translated");
 var res = r.Result; 
 ```
 
+## Get the library
+### from GitHub:
+```Dos
+cd myProjects
+git clone https://github.com/franck-gaspoz/GTranslatorAPI.git
+cd .\GTranslatorAPI\
+```
+
 <hr>
 
 > ### :information_source: About this repository
