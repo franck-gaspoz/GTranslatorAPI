@@ -17,7 +17,7 @@ The main documentation of the project is here: [../README.md](../README.md)
 # Build the tool
 
 from powershell command line:
-```dos  
+```Shell  
 mkdir gtranslator
 cd gtranslator
 dotnet new console
@@ -27,7 +27,7 @@ cd .\bin\Debug\net5.0\
 copy gtranslator.runtimeconfig.json GTranslatorAPI.CLI.runtimeconfig.json
 ```
 then you can run the tool:
-```dos  
+```Shell  
 dotnet GTranslatorAPI.CLI.dll
 dotnet GTranslatorAPI.CLI.dll -list
 dotnet GTranslatorAPI.CLI.dll en es "hello world!"
