@@ -13,6 +13,7 @@
     <Authors>Franck Gaspoz</Authors>
     <Company>franck.gaspoz@gmail.com</Company>
     <PackageDescription>Google Translate Rest API (Free) - .NET Core 5 , .NetStandard2.1</PackageDescription>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/franck-gaspoz/GTranslatorAPI.git</RepositoryUrl>
   </PropertyGroup>
 
