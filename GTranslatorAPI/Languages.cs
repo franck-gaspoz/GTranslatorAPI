@@ -9,6 +9,7 @@ namespace GTranslatorAPI
     public enum Languages
     {
         af,
+		auto,
         sq,
         ar,
         az,

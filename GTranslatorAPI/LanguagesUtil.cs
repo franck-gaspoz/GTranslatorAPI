@@ -84,6 +84,7 @@ namespace GTranslatorAPI
             CodeToName = new Dictionary<Languages, string>()
             {
                 { Languages.af, "Afrikaans" },
+				{ Languages.auto, "Auto"},
                 { Languages.sq, "Albanian" },
                 { Languages.ar, "Arabic" },
                 { Languages.az, "Azerbaijani" },
