@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace GTranslatorAPI.CLI
@@ -43,26 +44,16 @@ namespace GTranslatorAPI.CLI
         /// </summary>
         static async Task Run(string[] args)
         {
-            // 1. get the google trad api client
-            var translatorAPI = new Translator();
-
-            /*
-            * syntaxes: 
-            * 
-            * source_langid target_langid text [-q]
-            *   source_langid: original text lang id
-            *   target_langid: translated text lang id
-            *   -q : turn off all outputs excepting errors
-            * or
-            *   -list : dump list of langugaes ids & names
-            */
-
             try
             {
-                var runCommandListAction = CheckOpt(args, "--list")
-                    || CheckOpt(args, "-l");
+                var runCommandListAction = CheckOpt(args, "--list") || CheckOpt(args, "-l");
                 _isQuiet = CheckOpt(args, "-q");
                 _waitKeyBeforeExit = CheckOpt(args, "-w");
+
+                // get the google translate api client
+                var settings = Settings.CreateFromFile(
+                    Path.Combine(Environment.CurrentDirectory, "settings.json"));
+                var translatorAPI = new Translator(settings);
 
                 if (!runCommandListAction)
                 {
@@ -79,7 +70,7 @@ namespace GTranslatorAPI.CLI
 
                     // output result
                     Ln();
-                    Ln(r.TranslatedText);
+                    Ln(r==null?string.Empty:r!.TranslatedText);
                 }
                 else
                     OutputLanguages();
@@ -203,9 +194,9 @@ namespace GTranslatorAPI.CLI
         /// output method
         /// </summary>
         /// <param name="text">string to be outputed</param>
-        static void Ln(string text = "")
+        static void Ln(string? text = null)
         {
-            if (!_isQuiet)
+            if (text != null && !_isQuiet)
                 Console.WriteLine(text);
         }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -30,7 +29,7 @@ namespace GTranslatorAPI
         /// build a new instance from settings
         /// </summary>
         /// <param name="settings">network settings</param>
-        internal NetUtil( Settings settings )
+        internal NetUtil(Settings settings)
         {
             NetworkQueryTimeout = settings.NetworkQueryTimeout;
             UserAgent = settings.UserAgent;
@@ -39,17 +38,17 @@ namespace GTranslatorAPI
         /// <summary>
         /// http escape string
         /// </summary>
-        /// <param name="s">string to be escaped</param>
+        /// <param name="text">text to be escaped</param>
         /// <returns>escaped string</returns>
-        public static string Escape(string s)
-            => Uri.EscapeDataString(s);
+        public static string Escape(string text)
+            => Uri.EscapeDataString(text);
 
         /// <summary>
         /// preform query at url and return result (or null), eventually exception message and object else status description
         /// </summary>
         /// <param name="url">url</param>
         /// <returns>resut|null,status description|error message,null|exception</returns>
-        public async Task<Tuple<string?, string, Exception?>> GetQueryResponseAsync( string url )
+        public async Task<Tuple<string?, string, Exception?>> GetQueryResponseAsync(string url)
         {
             try
             {
@@ -66,8 +65,8 @@ namespace GTranslatorAPI
         /// <summary>
         /// async obtain response from query
         /// </summary>
-        /// <param name="query"></param>
-        /// <returns></returns>
+        /// <param name="query">query to be performed</param>
+        /// <returns>query stream result</returns>
         public static async Task<string> GetResponseAsync(HttpWebRequest query)
         {
             using var client = new HttpClient();

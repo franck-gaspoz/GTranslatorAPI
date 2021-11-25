@@ -14,7 +14,7 @@ namespace GTranslatorAPI
     public class Translator : ITranslator
     {
         /// <summary>
-        /// net utilities
+        /// network utility
         /// </summary>
         readonly NetUtil _net;
 
@@ -26,7 +26,8 @@ namespace GTranslatorAPI
         /// <summary>
         /// build a new instance
         /// </summary>
-        public Translator( Settings? settings = null )
+        /// <param name="settings">settings or null to use default settings</param>
+        public Translator(Settings? settings = null)
         {
             Settings = settings ?? new Settings();
             _net = new NetUtil(Settings);
@@ -38,7 +39,7 @@ namespace GTranslatorAPI
         /// <param name="sourceLanguage">source language code</param>
         /// <param name="targetLanguage">target language code</param>
         /// <param name="text">text to be translated</param>
-        /// <returns>Translation object</returns>
+        /// <returns>Translation object or null</returns>
         public async Task<Translation?> TranslateAsync(
             Languages sourceLanguage,
             Languages targetLanguage,
@@ -71,7 +72,7 @@ namespace GTranslatorAPI
             return translation;
         }
 
-        static readonly char[] _splitSymbols = new char[] { '.' , ',' , ';' , '!' , '?' , '\n' };
+        static readonly char[] _splitSymbols = new char[] { '.', ',', ';', '!', '?', '\n' };
 
         /// <summary>
         /// split text into segments according to the rules of division
@@ -86,7 +87,7 @@ namespace GTranslatorAPI
             int i = 0;
             int j = 0;
 
-            while (i < text.Length && j!=-1)
+            while (i < text.Length && j != -1)
             {
                 foreach (var splitChar in _splitSymbols)
                 {
@@ -103,23 +104,28 @@ namespace GTranslatorAPI
             return result;
         }
 
+        /// <summary>
+        /// normalize line breaks from various occurences
+        /// </summary>
+        /// <param name="text">text</param>
+        /// <returns>text with simple (\n) line breaks</returns>
         static string NormalizeLineBreaks(string text)
             => text.Replace("\r\n", "\n").Replace("\n\r", "\n");
 
         /// <summary>
         /// translate async
         /// </summary>
-        /// <param name="sourceLanguage"></param>
-        /// <param name="targetLanguage"></param>
-        /// <param name="text"></param>
-        /// <returns></returns>
+        /// <param name="sourceLanguage">source language</param>
+        /// <param name="targetLanguage">target language</param>
+        /// <param name="text">text to be translated</param>
+        /// <returns>translated text or errored task</returns>
         async Task<Translation> RunTranslateQueryAsync(
             Languages sourceLanguage,
             Languages targetLanguage,
             string text
             )
         {
-            var q = GetServiceUriPathAndQuery(text, sourceLanguage, targetLanguage);
+            var q = BuildServiceUriPathAndQuery(text, sourceLanguage, targetLanguage);
             var r = await _net.GetQueryResponseAsync(q);
             if (!string.IsNullOrWhiteSpace(r.Item1))
             {
@@ -146,16 +152,16 @@ namespace GTranslatorAPI
                 }
             }
             throw new TranslateException($"translate error: {r.Item2}");
-        }        
+        }
 
         /// <summary>
-        /// get uri path and query
+        /// build the query uri
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="sourceLanguage"></param>
-        /// <param name="targetLanguage"></param>
-        /// <returns></returns>
-        string GetServiceUriPathAndQuery(
+        /// <param name="text">text to be translated</param>
+        /// <param name="sourceLanguage">source language</param>
+        /// <param name="targetLanguage">target language</param>
+        /// <returns>query uri</returns>
+        string BuildServiceUriPathAndQuery(
             string text,
             Languages sourceLanguage,
             Languages targetLanguage)
@@ -175,7 +181,7 @@ namespace GTranslatorAPI
         /// <param name="sourceLanguageName">source language name</param>
         /// <param name="targetLanguageName">target language name</param>
         /// <param name="text">text to be translated</param>
-        /// <returns>Translation object</returns>
+        /// <returns>Translation object or null</returns>
         public async Task<Translation?> TranslateFromNamesAsync(
             string sourceLanguageName,
             string targetLanguageName,
@@ -198,7 +204,7 @@ namespace GTranslatorAPI
         /// <param name="sourceLanguageId">source language id</param>
         /// <param name="targetLanguageId">target language id</param>
         /// <param name="text">text to be translated</param>
-        /// <returns>Translation object</returns>
+        /// <returns>Translation object or null</returns>
         public async Task<Translation?> TranslateAsync(
             string sourceLanguageId,
             string targetLanguageId,
@@ -216,13 +222,13 @@ namespace GTranslatorAPI
         }
 
         /// <summary>
-        /// check if an object is null. abort if true
+        /// check if an object is null. throws exception if true
         /// </summary>
-        /// <param name="o"></param>
-        /// <param name="name"></param>
-        static void CheckIsNotNull(object? o, string name)
+        /// <param name="obj">object to be checked</param>
+        /// <param name="name">name of the object</param>
+        static void CheckIsNotNull(object? obj, string name)
         {
-            if (o == null)
+            if (obj == null)
                 throw new ArgumentNullException(name);
         }
 

@@ -1,4 +1,9 @@
-﻿namespace GTranslatorAPI
+﻿using System;
+using System.IO;
+
+using Newtonsoft.Json;
+
+namespace GTranslatorAPI
 {
     public class Settings
     {
@@ -28,15 +33,21 @@
         public string UserAgent { get; set; } = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36";
 
         /// <summary>
-        /// builds a new instance of the API settings
+        /// builds a new instance of the API settings using default settings
         /// </summary>
-        public Settings()
+        public Settings() { }
+
+        /// <summary>
+        /// builds a new instance of the API settings from settings file
+        /// </summary>
+        /// <param name="settingsFilePath">path of the file settings</param>
+        public static Settings CreateFromFile(string settingsFilePath)
         {
-            /*this.GTranslatorAPIURL = Default.GTranslatorAPIURL;
-            this.NetworkQueryTimeout = Default.NetworkQueryTimeout;
-            this.UserAgent = Default.UserAgent;
-            this.ParallelizeTranslationOfSegments = Default.ParallelizeTranslationOfSegments;
-            this.SplitStringBeforeTranslate = Default.SplitStringBeforeTranslate;*/
+            var settings = JsonConvert.DeserializeObject<Settings>(
+                File.ReadAllText(settingsFilePath));
+            if (settings == null)
+                throw new InvalidOperationException("failed to create settings");
+            return settings;
         }
     }
 }

@@ -54,11 +54,11 @@ namespace GTranslatorAPI
 
         static Dictionary<string, Languages>? _languageNameToLanguageCode;
 
-        static readonly Dictionary<Languages, string> _languageCodeToLanguageName 
+        static readonly Dictionary<Languages, string> _languageCodeToLanguageName
             = new()
             {
                 { Languages.af, "Afrikaans" },
-                { Languages.auto, "Auto"},
+                { Languages.auto, "Auto" },
                 { Languages.sq, "Albanian" },
                 { Languages.ar, "Arabic" },
                 { Languages.az, "Azerbaijani" },
