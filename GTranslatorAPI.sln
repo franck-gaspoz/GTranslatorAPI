@@ -7,6 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GTranslatorAPI", "GTranslat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GTranslatorAPI.CLI", "GTranslatorAPI.CLI\GTranslatorAPI.CLI.csproj", "{B5A2DBAD-B539-4AE7-ADE1-E9D92E57CB07}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{61BACCEA-C06D-4CC6-8421-D5946287B6DD}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+		Doc\run2.png = Doc\run2.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
