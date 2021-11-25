@@ -50,9 +50,11 @@ namespace GTranslatorAPI
             string text
             )
         {
-            var splits = new List<string>() { text };
+            IEnumerable<string> splits;
             if (Settings.SplitStringBeforeTranslate)
                 splits = SplitText(text);
+            else
+                splits = new List<string> { text };
 
             Translation translation = null;
 
@@ -74,49 +76,40 @@ namespace GTranslatorAPI
             return translation;
         }
 
+        static readonly char[] _splitSymbols = new char[] { '.' , ',' , ';' , '!' , '?' , '\n' };
+
         /// <summary>
         /// split text into segments according to the rules of division
         /// </summary>
-        /// <param name="txt"></param>
+        /// <param name="text"></param>
         /// <returns></returns>
-        List<string> SplitText(string txt)
+        static IEnumerable<string> SplitText(string text)
         {
-            txt = txt.Replace("\r\n", "\n");
-            txt = txt.Replace("\n\r", "\n");
-            var t = Split(new string[] { txt }, '.');
-            t = Split(t, (char)10);
-            t = Split(t, ';');
-            t = Split(t, '!');
-            t = Split(t, '?');
-            for (int i = 0; i < t.Count(); i++)
-                t[i] = t[i].Replace("\n", "\r\n");
-            return t.ToList();
-        }
+            text = NormalizeLineBreaks(text);
+            var result = new List<string>();
 
-        /// <summary>
-        /// build segments according to the carving with a character
-        /// </summary>
-        /// <param name="txts"></param>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        string[] Split(string[] txts, char c)
-        {
-            var r = new List<string>();
-            foreach (var s in txts)
+            int i = 0;
+            int j = 0;
+
+            while (i < text.Length && j!=-1)
             {
-                var t = s.Split(c);
-                var k = t.Count();
-                for (int i = 0; i < k; i++)
+                foreach (var splitChar in _splitSymbols)
                 {
-                    var ts = t[i];
-                    if (i < k - 1)
-                        ts += c;
-                    if (!string.IsNullOrEmpty(ts))
-                        r.Add(ts);
+                    if ((j = text.IndexOf(splitChar, i)) > -1)
+                    {
+                        result.Add(text.Substring(i, j - i + 1));
+                        i = j + 1;
+                        break;
+                    }
                 }
             }
-            return r.ToArray();
+            if (i < text.Length) result.Add(text[i..]);
+
+            return result;
         }
+
+        static string NormalizeLineBreaks(string text)
+            => text.Replace("\r\n", "\n").Replace("\n\r", "\n");
 
         /// <summary>
         /// translate async
