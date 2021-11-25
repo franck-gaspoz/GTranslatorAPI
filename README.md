@@ -97,7 +97,7 @@ namespace MyProject
 ```
 then run the project (ctrl+F5 | Run > Start without debugging). You should get:
 
-![run sample in vscode](Doc/run.png)
+![run sample in vscode](Doc/run2.png)
 
 <hr>
 
