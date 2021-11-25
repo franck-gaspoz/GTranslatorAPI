@@ -89,14 +89,14 @@ namespace GTranslatorAPI
 
             while (i < text.Length && j != -1)
             {
-                foreach (var splitChar in _splitSymbols)
+                var indexs = _splitSymbols.Select(splitChar => text.IndexOf(splitChar, i))
+                    .Where(index => index > -1);
+                j = indexs.Any() ? indexs.Min() : -1;
+
+                if (j > -1)
                 {
-                    if ((j = text.IndexOf(splitChar, i)) > -1)
-                    {
-                        result.Add(text.Substring(i, j - i + 1));
-                        i = j + 1;
-                        break;
-                    }
+                    result.Add(text.Substring(i, j - i + 1));
+                    i = j + 1;
                 }
             }
             if (i < text.Length) result.Add(text[i..]);

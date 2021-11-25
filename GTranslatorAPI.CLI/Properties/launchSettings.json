@@ -2,7 +2,7 @@
   "profiles": {
     "GTranslatorAPI.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "en es \"hello world, how do you do today?\" -w"
+      "commandLineArgs": "fr en \"bonjour les gens, comment allez vous ? moi j'arrive pas à dormir comme d'habitude, alors je code ce petit traducteur qui exploite google trad\" -w"
     }
   }
 }
