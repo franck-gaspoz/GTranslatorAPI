@@ -22,14 +22,18 @@ namespace GTranslatorAPI
         internal int NetworkQueryTimeout { get; set; } = 2000;
 
         /// <summary>
-        /// constructeur
+        /// build a new instance
         /// </summary>
-        internal NetUtil(
-            Settings settings
-            )
+        internal NetUtil() { }
+
+        /// <summary>
+        /// build a new instance from settings
+        /// </summary>
+        /// <param name="settings">network settings</param>
+        internal NetUtil( Settings settings )
         {
-            this.NetworkQueryTimeout = settings.NetworkQueryTimeout;
-            this.UserAgent = settings.UserAgent;
+            NetworkQueryTimeout = settings.NetworkQueryTimeout;
+            UserAgent = settings.UserAgent;
         }
 
         /// <summary>
@@ -37,115 +41,26 @@ namespace GTranslatorAPI
         /// </summary>
         /// <param name="s">string to be escaped</param>
         /// <returns>escaped string</returns>
-        public string Escape(string s)
-        {
-            return Uri.EscapeDataString(s);
-        }
+        public static string Escape(string s)
+            => Uri.EscapeDataString(s);
 
         /// <summary>
-        /// preform query at url and return result (or null) , status description
+        /// preform query at url and return result (or null), eventually exception message and object else status description
         /// </summary>
-        /// <param name="url">uri</param>
-        /// <returns>resut|null,status description</returns>
-        public Tuple<string, string, Exception> GetQueryResponse(
-            string url
-            )
-        {
-            string r = null;
-            try
-            {
-                var q = GetQuery(url);
-                using (var rep = GetResponse(q))
-                {
-                    if (rep.StatusCode == HttpStatusCode.OK)
-                    {
-                        using (var sr = rep.GetResponseStream())
-                        {
-                            using (var str = new StreamReader(sr))
-                            {
-                                r = str.ReadToEnd();
-                                return Tuple.Create<string, string, Exception>(r, rep.StatusDescription, null);
-                            }
-                        }
-                    }
-                    else
-                        return Tuple.Create<string, string, Exception>(null, rep.StatusDescription, null);
-                }
-            }
-            catch (Exception Ex)
-            {
-                return Tuple.Create<string, string, Exception>(null, Ex.Message, Ex);
-            }
-        }
-
-        /// <summary>
-        /// preform query at url and return result (or null) , status description
-        /// </summary>
-        /// <param name="url">uri</param>
-        /// <returns>resut|null,status description</returns>
-        public async Task<Tuple<string, string, Exception>> GetQueryResponseAsync(
-            string url
-            )
+        /// <param name="url">url</param>
+        /// <returns>resut|null,status description|error message,null|exception</returns>
+        public async Task<Tuple<string?, string, Exception?>> GetQueryResponseAsync( string url )
         {
             try
             {
-                var q = GetQuery(url);
+                var q = CreateQuery(url);
                 var rep = await GetResponseAsync(q);
-                return Tuple.Create<string, string, Exception>(rep, HttpStatusCode.OK + "", null);
+                return Tuple.Create<string?, string, Exception?>(rep, HttpStatusCode.OK.ToString(), null);
             }
             catch (Exception Ex)
             {
-                return Tuple.Create<string, string, Exception>(null, Ex.Message, Ex);
+                return Tuple.Create<string?, string, Exception?>(null, Ex.Message, Ex);
             }
-        }
-
-        /// <summary>
-        /// http get at uri
-        /// </summary>
-        /// <param name="uri">uri</param>
-        /// <param name="rethrowException">retain exceptions if true</param>
-        /// <returns></returns>
-        public string HTTPGet(
-                    string uri,
-                    bool rethrowException = true)
-        {
-            try
-            {
-                var q = GetQuery(uri);
-                using (var r = GetResponse(q))
-                {
-                    if (r.StatusCode == HttpStatusCode.OK)
-                    {
-                        using (var sr = new StreamReader(r.GetResponseStream(), true))
-                        {
-                            var rs = sr.ReadToEnd();
-                            return rs;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (rethrowException)
-                    throw;
-                else
-                    Console.Error.WriteLine(ex.ToString());
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// obtain response from query
-        /// </summary>
-        /// <param name="query">query object</param>
-        /// <exception cref="System.InvalidOperationException"></exception>
-        /// <exception cref="System.Net.ProtocolViolationException"></exception>
-        /// <exception cref="System.NotSupportedException"></exception>
-        /// <exception cref="System.Net.WebException"></exception>
-        /// <returns>web repsonse</returns>
-        public HttpWebResponse GetResponse(HttpWebRequest query)
-        {
-            return (HttpWebResponse)query.GetResponse();
         }
 
         /// <summary>
@@ -153,9 +68,9 @@ namespace GTranslatorAPI
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        public async Task<string> GetResponseAsync(HttpWebRequest query)
+        public static async Task<string> GetResponseAsync(HttpWebRequest query)
         {
-            var client = new HttpClient();
+            using var client = new HttpClient();
             var content = await client.GetStringAsync(query.RequestUri.AbsoluteUri);
             return content;
         }
@@ -165,7 +80,7 @@ namespace GTranslatorAPI
         /// </summary>
         /// <param name="uri">target uri</param>
         /// <returns>web request</returns>
-        public HttpWebRequest GetQuery(string uri)
+        public HttpWebRequest CreateQuery(string uri)
         {
             var u = new Uri(uri);
             var query = (HttpWebRequest)WebRequest.Create(u);

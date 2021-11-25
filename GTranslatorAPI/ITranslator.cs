@@ -11,7 +11,7 @@ namespace GTranslatorAPI
         /// <param name="targetLanguage">target language code</param>
         /// <param name="text">text to be translated</param>
         /// <returns>Translation object</returns>
-        Task<Translation> TranslateAsync(
+        Task<Translation?> TranslateAsync(
             Languages sourceLanguage,
             Languages targetLanguage,
             string text
@@ -24,7 +24,7 @@ namespace GTranslatorAPI
         /// <param name="targetLanguageName">target language name</param>
         /// <param name="text">text to be translated</param>
         /// <returns>Translation object</returns>
-        Task<Translation> TranslateFromNamesAsync(
+        Task<Translation?> TranslateFromNamesAsync(
             string sourceLanguageName,
             string targetLanguageName,
             string text
@@ -37,7 +37,7 @@ namespace GTranslatorAPI
         /// <param name="targetLanguageId">target language id</param>
         /// <param name="text">text to be translated</param>
         /// <returns>Translation object</returns>
-        Task<Translation> TranslateAsync(
+        Task<Translation?> TranslateAsync(
             string sourceLanguageId,
             string targetLanguageId,
             string text

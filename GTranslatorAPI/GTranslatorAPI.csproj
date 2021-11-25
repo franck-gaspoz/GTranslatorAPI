@@ -6,6 +6,8 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <Nullable>enable</Nullable>
+	  
     <TargetFramework>net5.0</TargetFramework>
 	<Plateform>AnyCPU</Plateform>
 	<CopyLocalFileAssemblies>False</CopyLocalFileAssemblies>

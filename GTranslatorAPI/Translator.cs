@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-
 namespace GTranslatorAPI
 {
     /// <summary>
@@ -17,24 +16,20 @@ namespace GTranslatorAPI
         /// <summary>
         /// net utilities
         /// </summary>
-        NetUtil Net;
+        readonly NetUtil _net;
 
         /// <summary>
         /// API settings 
         /// </summary>
-        public Settings Settings;
+        public Settings Settings { get; protected set; }
 
         /// <summary>
-        /// prepare a new instance
+        /// build a new instance
         /// </summary>
-        public Translator(
-            Settings settings = null
-            )
+        public Translator( Settings? settings = null )
         {
-            Settings = (settings == null) ?
-                new Settings()
-                : settings;
-            Net = new NetUtil(Settings);
+            Settings = settings ?? new Settings();
+            _net = new NetUtil(Settings);
         }
 
         /// <summary>
@@ -44,7 +39,7 @@ namespace GTranslatorAPI
         /// <param name="targetLanguage">target language code</param>
         /// <param name="text">text to be translated</param>
         /// <returns>Translation object</returns>
-        public async Task<Translation> TranslateAsync(
+        public async Task<Translation?> TranslateAsync(
             Languages sourceLanguage,
             Languages targetLanguage,
             string text
@@ -56,11 +51,11 @@ namespace GTranslatorAPI
             else
                 splits = new List<string> { text };
 
-            Translation translation = null;
+            Translation? translation = null;
 
             // parallelized segments translation
             IEnumerable<Task<Translation>> trTasksQuery =
-                splits.Select(textSplit => _TranslateAsync(
+                splits.Select(textSplit => RunTranslateQueryAsync(
                     sourceLanguage, targetLanguage, textSplit));
 
             var trTasks = trTasksQuery.ToArray();
@@ -118,23 +113,26 @@ namespace GTranslatorAPI
         /// <param name="targetLanguage"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        async Task<Translation> _TranslateAsync(
+        async Task<Translation> RunTranslateQueryAsync(
             Languages sourceLanguage,
             Languages targetLanguage,
             string text
             )
         {
             var q = GetServiceUriPathAndQuery(text, sourceLanguage, targetLanguage);
-            var r = await Net.GetQueryResponseAsync(q);
+            var r = await _net.GetQueryResponseAsync(q);
             if (!string.IsNullOrWhiteSpace(r.Item1))
             {
-                var o = JsonConvert.DeserializeObject(r.Item1) as JArray;
-                if (o != null)
+                if (JsonConvert.DeserializeObject(r.Item1) is JArray o)
                 {
                     try
                     {
+#pragma warning disable CS8602
+#pragma warning disable CS8604
                         var translatedText = o[0][0][0].Value<string>();
                         var originalText = o[0][0][1].Value<string>();
+#pragma warning restore CS8602
+#pragma warning restore CS8604
                         return new Translation()
                         {
                             TranslatedText = translatedText,
@@ -143,54 +141,12 @@ namespace GTranslatorAPI
                     }
                     catch (Exception Ex)
                     {
-                        throw new TranslateException($"Translate error: invalid result {o}", Ex);
+                        throw new TranslateException($"translate error: '{Ex.Message}': invalid result: {o}", Ex);
                     }
                 }
             }
-            throw new TranslateException($"Translate error: {r.Item2}");
-        }
-
-        /// <summary>
-        /// translate text from source and target languages codes
-        /// </summary>
-        /// <param name="sourceLanguage">source language code</param>
-        /// <param name="targetLanguage">target language code</param>
-        /// <param name="text">text to be translated</param>
-        /// <exception cref="TranslateException">exception during translate operation</exception>
-        /// <returns>Translation object</returns>
-        Translation _Translate(
-            Languages sourceLanguage,
-            Languages targetLanguage,
-            string text
-            )
-        {
-            var q = GetServiceUriPathAndQuery(text, sourceLanguage, targetLanguage);
-
-            var r = Net.GetQueryResponse(q);
-
-            if (!string.IsNullOrWhiteSpace(r.Item1))
-            {
-                var o = JsonConvert.DeserializeObject(r.Item1) as JArray;
-                if (o != null)
-                {
-                    try
-                    {
-                        var translatedText = o[0][0][0].Value<string>();
-                        var originalText = o[0][0][1].Value<string>();
-                        return new Translation()
-                        {
-                            TranslatedText = translatedText,
-                            OriginalText = originalText
-                        };
-                    }
-                    catch (Exception Ex)
-                    {
-                        throw new TranslateException($"Translate error: invalid result {o}", Ex);
-                    }
-                }
-            }
-            throw new TranslateException($"Translate error: {r.Item2}");
-        }
+            throw new TranslateException($"translate error: {r.Item2}");
+        }        
 
         /// <summary>
         /// get uri path and query
@@ -205,11 +161,11 @@ namespace GTranslatorAPI
             Languages targetLanguage)
         {
             CheckIsNotNull(text, "text");
-            var q = //Properties.Settings.Default.GTranslatorAPIURL
+            var q =
                 Settings.GTranslatorAPIURL
                 .Replace("{srcl}", LanguagesUtil.GetId(sourceLanguage))
                 .Replace("{tgtl}", LanguagesUtil.GetId(targetLanguage))
-                .Replace("{txt}", Net.Escape(text));
+                .Replace("{txt}", NetUtil.Escape(text));
             return q;
         }
 
@@ -220,19 +176,19 @@ namespace GTranslatorAPI
         /// <param name="targetLanguageName">target language name</param>
         /// <param name="text">text to be translated</param>
         /// <returns>Translation object</returns>
-        public async Task<Translation> TranslateFromNamesAsync(
+        public async Task<Translation?> TranslateFromNamesAsync(
             string sourceLanguageName,
             string targetLanguageName,
             string text
             )
         {
-            var srcLng = LanguagesUtil.GetCode(sourceLanguageName);
-            var tgtLng = LanguagesUtil.GetCode(targetLanguageName);
+            var srcLng = LanguagesUtil.GetLanguageCode(sourceLanguageName);
+            var tgtLng = LanguagesUtil.GetLanguageCode(targetLanguageName);
             CheckCodeIsValid(srcLng);
             CheckCodeIsValid(tgtLng);
             return await TranslateAsync(
-                (Languages)srcLng,
-                (Languages)tgtLng,
+                (Languages)srcLng!,
+                (Languages)tgtLng!,
                 text);
         }
 
@@ -243,19 +199,19 @@ namespace GTranslatorAPI
         /// <param name="targetLanguageId">target language id</param>
         /// <param name="text">text to be translated</param>
         /// <returns>Translation object</returns>
-        public async Task<Translation> TranslateAsync(
+        public async Task<Translation?> TranslateAsync(
             string sourceLanguageId,
             string targetLanguageId,
             string text
             )
         {
-            var srcLng = LanguagesUtil.GetCodeFromId(sourceLanguageId);
-            var tgtLng = LanguagesUtil.GetCodeFromId(targetLanguageId);
+            var srcLng = LanguagesUtil.GetLanguageCodeFromLanguageId(sourceLanguageId);
+            var tgtLng = LanguagesUtil.GetLanguageCodeFromLanguageId(targetLanguageId);
             CheckCodeIsValid(srcLng);
             CheckCodeIsValid(tgtLng);
             return await TranslateAsync(
-                (Languages)srcLng,
-                (Languages)tgtLng,
+                (Languages)srcLng!,
+                (Languages)tgtLng!,
                 text);
         }
 
@@ -264,7 +220,7 @@ namespace GTranslatorAPI
         /// </summary>
         /// <param name="o"></param>
         /// <param name="name"></param>
-        void CheckIsNotNull(object o, string name)
+        static void CheckIsNotNull(object? o, string name)
         {
             if (o == null)
                 throw new ArgumentNullException(name);
@@ -274,7 +230,7 @@ namespace GTranslatorAPI
         /// check if a language code is valid. abort if false
         /// </summary>
         /// <param name="languageCode"></param>
-        void CheckCodeIsValid(Languages? languageCode)
+        static void CheckCodeIsValid(Languages? languageCode)
         {
             if (languageCode == null)
                 throw new ArgumentNullException($"language is not defined: {languageCode}");

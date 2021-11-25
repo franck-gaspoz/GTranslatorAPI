@@ -8,80 +8,54 @@ namespace GTranslatorAPI
     /// </summary>
     public static class LanguagesUtil
     {
-        static public string GetName(Languages languageCode)
-        {
-            string s = null;
-            CodeToName.TryGetValue(languageCode, out s);
-            return s;
-        }
-
         static public string GetId(Languages languageCode)
         {
-            var s = (languageCode + "").Replace("_", "-");
-            if (s == "ice")
-                s = "is";
-            return s;
+            var normalizedLanguageCode = (languageCode.ToString()).Replace("_", "-");
+            if (normalizedLanguageCode == "ice")
+                normalizedLanguageCode = "is";
+            return normalizedLanguageCode;
         }
 
-        static public string GetId(string languageName)
-        {
-            var lc = GetCode(languageName);
-            if (lc == null) return null;
-            var c = (Languages)lc;
-            return GetId(c);
-        }
-
-        static public Languages? GetCode(string languageName)
+        static public Languages? GetLanguageCode(string languageName)
         {
             InitNameToCode();
-            Languages l;
-            if (!NameToCode.TryGetValue(languageName, out l))
+            if (!_languageNameToLanguageCode!.TryGetValue(languageName, out var languageCode))
                 return null;
-            return l;
+            return languageCode;
         }
 
-        static public Languages? GetCodeFromId(string languageId)
+        static public Languages? GetLanguageCodeFromLanguageId(string languageId)
         {
             var s = languageId.Replace("-", "_");
             if (s == "is")
                 s = "ice";
-            Languages l;
-            if (!Enum.TryParse<Languages>(s, out l))
+            if (!Enum.TryParse<Languages>(s, out var languageCode))
                 return null;
-            return l;
+            return languageCode;
         }
 
         static void InitNameToCode()
         {
-            if (NameToCode == null)
+            if (_languageNameToLanguageCode == null)
             {
-                NameToCode = new Dictionary<string, Languages>();
-                foreach (var kvp in CodeToName)
-                    NameToCode[kvp.Value] = kvp.Key;
+                _languageNameToLanguageCode = new Dictionary<string, Languages>();
+                foreach (var kvp in _languageCodeToLanguageName)
+                    _languageNameToLanguageCode[kvp.Value] = kvp.Key;
             }
         }
 
         public static Dictionary<Languages, string> GetLanguagesCodesToNames()
         {
             var d = new Dictionary<Languages, string>();
-            foreach (var kvp in CodeToName)
+            foreach (var kvp in _languageCodeToLanguageName)
                 d[kvp.Key] = kvp.Value;
             return d;
         }
 
-        public static Dictionary<string, Languages> GetLanguagesNamesToCodes()
-        {
-            var d = new Dictionary<string, Languages>();
-            InitNameToCode();
-            foreach (var kvp in NameToCode)
-                d[kvp.Key] = kvp.Value;
-            return d;
-        }
+        static Dictionary<string, Languages>? _languageNameToLanguageCode;
 
-        static Dictionary<string, Languages> NameToCode = null;
-
-        static Dictionary<Languages, string>
-            CodeToName = new Dictionary<Languages, string>()
+        static readonly Dictionary<Languages, string> _languageCodeToLanguageName 
+            = new()
             {
                 { Languages.af, "Afrikaans" },
                 { Languages.auto, "Auto"},

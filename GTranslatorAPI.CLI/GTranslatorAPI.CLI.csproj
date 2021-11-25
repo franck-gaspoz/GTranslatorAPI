@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-	  <Nullable>enable</Nullable>
+	<Nullable>enable</Nullable>
 	  
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
@@ -18,14 +18,14 @@
     <Authors>Franck Gaspoz</Authors>
     <Company>franck.gaspoz@gmail.com</Company>
     <PackageDescription>Google Translate API CLI - .NET Core 5</PackageDescription>
-	  <Description>Google Translate API Client CLI Console Application C#</Description>
-	  <PackageReleaseNotes>.NET Core 5 migration</PackageReleaseNotes>
+	<Description>Google Translate API Client CLI Console Application C#</Description>
+	<PackageReleaseNotes>.NET Core 5 migration</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/franck-gaspoz/GTranslatorAPI.git</RepositoryUrl>
     <RepositoryType>GIT</RepositoryType>
     <PackageProjectUrl>https://github.com/franck-gaspoz/GTranslatorAPI</PackageProjectUrl>
     <Copyright>Franck Gaspoz</Copyright>
-  </PropertyGroup>
+    </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<PlatformTarget>AnyCPU</PlatformTarget>
