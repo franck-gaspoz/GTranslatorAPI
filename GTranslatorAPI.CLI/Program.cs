@@ -27,7 +27,7 @@ namespace GTranslatorAPI.CLI
             var returnCode = 0;
             try
             {
-                Run(args);
+                await Run(args);
             }
             catch
             {
@@ -41,10 +41,10 @@ namespace GTranslatorAPI.CLI
         /// <summary>
         /// run
         /// </summary>
-        static void Run(string[] args)
+        static async Task Run(string[] args)
         {
             // 1. get the google trad api client
-            var translatorAPI = new Client();
+            var translatorAPI = new Translator();
 
             /*
             * syntaxes: 
@@ -57,11 +57,9 @@ namespace GTranslatorAPI.CLI
             *   -list : dump list of langugaes ids & names
             */
 
-            bool runCommandListAction;
-
             try
             {
-                runCommandListAction = CheckOpt(args, "--list")
+                var runCommandListAction = CheckOpt(args, "--list")
                     || CheckOpt(args, "-l");
                 _isQuiet = CheckOpt(args, "-q");
                 _waitKeyBeforeExit = CheckOpt(args, "-w");
@@ -73,7 +71,7 @@ namespace GTranslatorAPI.CLI
                     var text = TryGetArg(args, 2);
 
                     // call translate api
-                    var r = translatorAPI.Translate(
+                    var r = await translatorAPI.TranslateAsync(
                         srcLangId,
                         tgtLangId,
                         text

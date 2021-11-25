@@ -12,7 +12,7 @@ namespace GTranslatorAPI
     /// <summary>
     /// Google Trad API client
     /// </summary>
-    public class Client : IClient
+    public class Translator : ITranslator
     {
         /// <summary>
         /// net utilities
@@ -27,7 +27,7 @@ namespace GTranslatorAPI
         /// <summary>
         /// prepare a new instance
         /// </summary>
-        public Client(
+        public Translator(
             Settings settings = null
             )
         {
@@ -44,75 +44,34 @@ namespace GTranslatorAPI
         /// <param name="targetLanguage">target language code</param>
         /// <param name="text">text to be translated</param>
         /// <returns>Translation object</returns>
-        public Translation Translate(
-            Languages sourceLanguage,
-            Languages targetLanguage,
-            string text
-            )
-        {
-            var t = new List<string>() { text };
-            if (Settings.SplitStringBeforeTranslate)
-                t = SplitText(text);
-
-            Translation r = null;
-
-            foreach (var s in t)
-            {
-                bool eol = s.EndsWith("\r\n");
-                // should catch time out exception for retry
-                var sr = _Translate(
-                    sourceLanguage,
-                    targetLanguage,
-                    s
-                    );
-                if (eol)
-                    sr.TranslatedText += "\r\n";
-                if (r == null)
-                    r = sr;
-                else
-                    r.TranslatedText += sr.TranslatedText;
-            }
-            return r;
-        }
-
-        /// <summary>
-        /// translate text from source and target languages codes
-        /// </summary>
-        /// <param name="sourceLanguage">source language code</param>
-        /// <param name="targetLanguage">target language code</param>
-        /// <param name="text">text to be translated</param>
-        /// <returns>Translation object</returns>
         public async Task<Translation> TranslateAsync(
             Languages sourceLanguage,
             Languages targetLanguage,
             string text
             )
         {
-            var t = new List<string>() { text };
+            var splits = new List<string>() { text };
             if (Settings.SplitStringBeforeTranslate)
-                t = SplitText(text);
+                splits = SplitText(text);
 
-            Translation r = null;
+            Translation translation = null;
 
             // parallelized segments translation
             IEnumerable<Task<Translation>> trTasksQuery =
-                from s in t
-                select _TranslateAsync(
-                    sourceLanguage,
-                    targetLanguage,
-                    s
-                );
+                splits.Select(textSplit => _TranslateAsync(
+                    sourceLanguage, targetLanguage, textSplit));
+
             var trTasks = trTasksQuery.ToArray();
             await Task.WhenAll(trTasks);
             foreach (var tr in trTasks)
             {
-                if (r == null)
-                    r = tr.Result;
+                if (translation == null)
+                    translation = tr.Result;
                 else
-                    r.TranslatedText += tr.Result.TranslatedText;
+                    translation.TranslatedText += tr.Result.TranslatedText;
             }
 
-            return r;
+            return translation;
         }
 
         /// <summary>
@@ -268,29 +227,6 @@ namespace GTranslatorAPI
         /// <param name="targetLanguageName">target language name</param>
         /// <param name="text">text to be translated</param>
         /// <returns>Translation object</returns>
-        public Translation TranslateFromNames(
-            string sourceLanguageName,
-            string targetLanguageName,
-            string text
-            )
-        {
-            var srcLng = LanguagesUtil.GetCode(sourceLanguageName);
-            var tgtLng = LanguagesUtil.GetCode(targetLanguageName);
-            CheckCodeIsValid(srcLng);
-            CheckCodeIsValid(tgtLng);
-            return Translate(
-                (Languages)srcLng,
-                (Languages)tgtLng,
-                text);
-        }
-
-        /// <summary>
-        /// translate text from source and target language names if valids
-        /// </summary>
-        /// <param name="sourceLanguageName">source language name</param>
-        /// <param name="targetLanguageName">target language name</param>
-        /// <param name="text">text to be translated</param>
-        /// <returns>Translation object</returns>
         public async Task<Translation> TranslateFromNamesAsync(
             string sourceLanguageName,
             string targetLanguageName,
@@ -302,29 +238,6 @@ namespace GTranslatorAPI
             CheckCodeIsValid(srcLng);
             CheckCodeIsValid(tgtLng);
             return await TranslateAsync(
-                (Languages)srcLng,
-                (Languages)tgtLng,
-                text);
-        }
-
-        /// <summary>
-        /// translate text from source and target languages ids given as string if valids
-        /// </summary>
-        /// <param name="sourceLanguageId">source language id</param>
-        /// <param name="targetLanguageId">target language id</param>
-        /// <param name="text">text to be translated</param>
-        /// <returns>Translation object</returns>
-        public Translation Translate(
-            string sourceLanguageId,
-            string targetLanguageId,
-            string text
-            )
-        {
-            var srcLng = LanguagesUtil.GetCodeFromId(sourceLanguageId);
-            var tgtLng = LanguagesUtil.GetCodeFromId(targetLanguageId);
-            CheckCodeIsValid(srcLng);
-            CheckCodeIsValid(tgtLng);
-            return Translate(
                 (Languages)srcLng,
                 (Languages)tgtLng,
                 text);
