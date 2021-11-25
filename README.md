@@ -11,14 +11,22 @@ VSCode / Visual Studio
 **a C# library that deals with Google Translate REST API. Offers google translate service operations from a C# software (with no api token)**
 
 ```CSharp
-var gcl = new GTranslatorAPIClient();
+
+using GTranslatorAPI;
+
+...
+
+var translator = new Translator();
+
 // source language, target language, text to be translated
-var r = gcl.TranslateAsync(Languages.en, Languages.fr, "text to be translated");
-// translated text
-var res = r.Result; 
+var result = await translator.TranslateAsync(Languages.en, Languages.fr, "text to be translated");
+
+// output translated text
+System.Console.WriteLine(result);
+
 ```
 
-## Get the library
+## Get the library project (vscode example)
 ### source from GitHub:
 ```dosbatch
 cd myProjects
@@ -28,25 +36,29 @@ code .
 ```
 *then go Run > Start Debugging , select .Net Core engine*, you should get the output:
 ```
-GTranslatorAPI command line interface 1.0.0.0
-(c)MIT 2020 franck.gaspoz@gmail.com
+GTranslator API CLI 2.0.0.0
+(c) franck.gaspoz@gmail.com 2021 License MIT
 
-command line syntax:
-source_langid target_langid text [-q]
-    source_langid : original text lang id
-    target_langid : translated text lang id
-    -q : turn off all outputs excepting errors
-or
-    -list : dump list of languages ids & names
+command line syntaxes:
+
+    source_langid target_langid text [-q] [-w]
+        source_langid : original text lang id
+        target_langid : translated text lang id
+        q : turn off all outputs excepting errors
+
+    -l | --list [-w]
+        l | list : dump list of languages ids & names
+
+        w : wait a key press before exit
 ```
 ### package from nuget:
 ```dosbatch
-dotnet add package GTranslatorAPI --version 1.0.0 --source https://www.nuget.org/api/v2/package/
+dotnet add package GTranslatorAPI --version 2.0.0 --source https://www.nuget.org/api/v2/package/
 ```
 
 ### package from GitHub:
 ```dosbatch
-dotnet add package GTranslatorAPI --version 1.0.0 --source https://nuget.pkg.github.com/franck-gaspoz/index.json
+dotnet add package GTranslatorAPI --version 2.0.0 --source https://nuget.pkg.github.com/franck-gaspoz/index.json
 ```
 
 ## Use the library
@@ -55,7 +67,7 @@ let's build a new C# console project for testing the GTranslatorAPI nuget packag
 mkdir MyProject
 cd MyProject
 dotnet new console
-dotnet add package GTranslatorAPI --version 1.0.0
+dotnet add package GTranslatorAPI --version 2.0.0
 code .
 ```
 let's change the default main method in Program.cs, to change its default behavior (output 'Hello world!') by a new one, that **adds a translation of 'Hello world!' to spanish**, using the GTranslatorAPI :
@@ -67,16 +79,17 @@ namespace MyProject
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             string s = "Hello world!";
             Console.WriteLine(s);
-            var tr = new GTranslatorAPIClient();
-            var r = tr.TranslateAsync(Languages.en,Languages.es,s);
-            var res = r?.Result;            
-            Console.WriteLine(res?.TranslatedText);    
-            var dbg=$"-- is canceled={r?.IsCanceled},is completed={r?.IsCompleted},is completed successfully={r?.IsCompletedSuccessfully},is faulted={r?.IsFaulted}";
-            Console.WriteLine(dbg);       
+            
+            var translator = new Translator();
+            var result = await translator.TranslateAsync(Languages.en,Languages.es,s);         
+            
+            Console.WriteLine(result.TranslatedText);    
+            
+            Console.WriteLine(dbg);
         }
     }
 }
@@ -84,7 +97,7 @@ namespace MyProject
 ```
 then run the project (ctrl+F5 | Run > Start without debugging). You should get:
 
-![run sample in vscode](Doc/run.png)
+![run sample in vscode](Doc/run2.png)
 
 <hr>
 
