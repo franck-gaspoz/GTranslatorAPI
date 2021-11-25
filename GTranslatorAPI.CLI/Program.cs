@@ -62,7 +62,7 @@ namespace GTranslatorAPI.CLI
                     var text = TryGetArg(args, 2);
 
                     // call translate api
-                    var r = await translatorAPI.TranslateAsync(
+                    var result = await translatorAPI.TranslateAsync(
                         srcLangId,
                         tgtLangId,
                         text
@@ -70,7 +70,7 @@ namespace GTranslatorAPI.CLI
 
                     // output result
                     Ln();
-                    Ln(r==null?string.Empty:r!.TranslatedText);
+                    Ln(result==null?string.Empty:result!.TranslatedText);
                 }
                 else
                     OutputLanguages();
@@ -184,7 +184,7 @@ namespace GTranslatorAPI.CLI
             Ln("        q : turn off all outputs excepting errors");
             Ln();
             Ln("    -l | --list [-w]");
-            Ln("        l | -list : dump list of languages ids & names");
+            Ln("        l | list : dump list of languages ids & names");
             Ln();
             Ln("        w : wait a key press before exit");
             Ln();
@@ -194,7 +194,7 @@ namespace GTranslatorAPI.CLI
         /// output method
         /// </summary>
         /// <param name="text">string to be outputed</param>
-        static void Ln(string? text = null)
+        static void Ln(string? text = "")
         {
             if (text != null && !_isQuiet)
                 Console.WriteLine(text);

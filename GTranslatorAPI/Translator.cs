@@ -89,7 +89,8 @@ namespace GTranslatorAPI
 
             while (i < text.Length && j != -1)
             {
-                var indexs = _splitSymbols.Select(splitChar => text.IndexOf(splitChar, i))
+                var indexs = _splitSymbols.Select
+                    (splitChar => text.IndexOf(splitChar, i))
                     .Where(index => index > -1);
                 j = indexs.Any() ? indexs.Min() : -1;
 
