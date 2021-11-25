@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GTranslatorAPI
 {
@@ -24,8 +20,8 @@ namespace GTranslatorAPI
         /// </summary>
         /// <param name="txt">error text</param>
         /// <param name="ex">inner exception</param>
-        public TranslateException(string txt,Exception ex)
-            : base(txt,ex)
+        public TranslateException(string txt, Exception ex)
+            : base(txt, ex)
         {
 
         }

@@ -1,0 +1,7 @@
+﻿{
+  "GTranslatorAPIURL": "",
+  "UserAgent": "",
+  "NetworkQueryTimeout": 2000,
+  "ParallelizeTranslationOfSegments": true,
+  "SplitStringBeforeTranslate" :  true
+}

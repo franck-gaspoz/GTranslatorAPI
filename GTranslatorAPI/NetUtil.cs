@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 
 namespace GTranslatorAPI
 {
@@ -29,7 +25,7 @@ namespace GTranslatorAPI
         /// constructeur
         /// </summary>
         internal NetUtil(
-            GTranslatorAPISettings settings
+            Settings settings
             )
         {
             this.NetworkQueryTimeout = settings.NetworkQueryTimeout;
@@ -51,7 +47,7 @@ namespace GTranslatorAPI
         /// </summary>
         /// <param name="url">uri</param>
         /// <returns>resut|null,status description</returns>
-        public Tuple<string, string,Exception> GetQueryResponse(
+        public Tuple<string, string, Exception> GetQueryResponse(
             string url
             )
         {
@@ -68,17 +64,17 @@ namespace GTranslatorAPI
                             using (var str = new StreamReader(sr))
                             {
                                 r = str.ReadToEnd();
-                                return Tuple.Create<string, string, Exception>(r, rep.StatusDescription,null);
+                                return Tuple.Create<string, string, Exception>(r, rep.StatusDescription, null);
                             }
                         }
                     }
                     else
-                        return Tuple.Create<string, string,Exception>(null, rep.StatusDescription,null);
+                        return Tuple.Create<string, string, Exception>(null, rep.StatusDescription, null);
                 }
             }
             catch (Exception Ex)
             {
-                return Tuple.Create<string, string,Exception>(null, Ex.Message,Ex);
+                return Tuple.Create<string, string, Exception>(null, Ex.Message, Ex);
             }
         }
 
@@ -95,7 +91,7 @@ namespace GTranslatorAPI
             {
                 var q = GetQuery(url);
                 var rep = await GetResponseAsync(q);
-                return Tuple.Create<string, string, Exception>(rep, HttpStatusCode.OK+"", null);
+                return Tuple.Create<string, string, Exception>(rep, HttpStatusCode.OK + "", null);
             }
             catch (Exception Ex)
             {
@@ -128,10 +124,12 @@ namespace GTranslatorAPI
                     }
                 }
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
                 if (rethrowException)
-                    throw Ex;
+                    throw;
+                else
+                    Console.Error.WriteLine(ex.ToString());
             }
             return null;
         }

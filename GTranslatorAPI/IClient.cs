@@ -2,7 +2,7 @@
 
 namespace GTranslatorAPI
 {
-    public interface IGTranslatorAPIClient
+    public interface IClient
     {
         /*
          * SYNC API

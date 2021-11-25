@@ -46,14 +46,14 @@ namespace GTranslatorAPI
             if (s == "is")
                 s = "ice";
             Languages l;
-            if (!Enum.TryParse<Languages>(s,out l))
+            if (!Enum.TryParse<Languages>(s, out l))
                 return null;
             return l;
         }
-        
+
         static void InitNameToCode()
         {
-            if (NameToCode==null)
+            if (NameToCode == null)
             {
                 NameToCode = new Dictionary<string, Languages>();
                 foreach (var kvp in CodeToName)
@@ -69,7 +69,7 @@ namespace GTranslatorAPI
             return d;
         }
 
-        public static Dictionary<string,Languages> GetLanguagesNamesToCodes()
+        public static Dictionary<string, Languages> GetLanguagesNamesToCodes()
         {
             var d = new Dictionary<string, Languages>();
             InitNameToCode();
@@ -84,7 +84,7 @@ namespace GTranslatorAPI
             CodeToName = new Dictionary<Languages, string>()
             {
                 { Languages.af, "Afrikaans" },
-				{ Languages.auto, "Auto"},
+                { Languages.auto, "Auto"},
                 { Languages.sq, "Albanian" },
                 { Languages.ar, "Arabic" },
                 { Languages.az, "Azerbaijani" },

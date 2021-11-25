@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GTranslatorAPI.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "en es \"hello world, how do you do today?\" -w"
+    }
+  }
+}

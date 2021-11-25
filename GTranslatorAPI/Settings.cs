@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using static GTranslatorAPI.Properties.Settings;
-
-namespace GTranslatorAPI
+﻿namespace GTranslatorAPI
 {
-    public class GTranslatorAPISettings
+    public class Settings
     {
         /// <summary>
         /// if true, the texts are split and translated using multiple queries
@@ -26,7 +18,7 @@ namespace GTranslatorAPI
         public string GTranslatorAPIURL { get; set; } = "https://translate.googleapis.com/translate_a/single?client=gtx&sl={srcl}&tl={tgtl}&dt=t&q={txt}";
 
         /// <summary>
-        /// query time out
+        /// query time out (ms)
         /// </summary>
         public int NetworkQueryTimeout { get; set; } = 2000;
 
@@ -38,13 +30,13 @@ namespace GTranslatorAPI
         /// <summary>
         /// builds a new instance of the API settings
         /// </summary>
-        public GTranslatorAPISettings()
+        public Settings()
         {
-            this.GTranslatorAPIURL = Default.GTranslatorAPIURL;
+            /*this.GTranslatorAPIURL = Default.GTranslatorAPIURL;
             this.NetworkQueryTimeout = Default.NetworkQueryTimeout;
             this.UserAgent = Default.UserAgent;
             this.ParallelizeTranslationOfSegments = Default.ParallelizeTranslationOfSegments;
-            this.SplitStringBeforeTranslate = Default.SplitStringBeforeTranslate;
+            this.SplitStringBeforeTranslate = Default.SplitStringBeforeTranslate;*/
         }
     }
 }

@@ -1,17 +1,18 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 
 namespace GTranslatorAPI
 {
     /// <summary>
-    /// Google Trad REST API (free) client
+    /// Google Trad API client
     /// </summary>
-    public class GTranslatorAPIClient : IGTranslatorAPIClient
+    public class Client : IClient
     {
         /// <summary>
         /// net utilities
@@ -21,17 +22,17 @@ namespace GTranslatorAPI
         /// <summary>
         /// API settings 
         /// </summary>
-        public GTranslatorAPISettings Settings;
+        public Settings Settings;
 
         /// <summary>
         /// prepare a new instance
         /// </summary>
-        public GTranslatorAPIClient(
-            GTranslatorAPISettings settings = null
+        public Client(
+            Settings settings = null
             )
         {
             Settings = (settings == null) ?
-                new GTranslatorAPISettings()
+                new Settings()
                 : settings;
             Net = new NetUtil(Settings);
         }
@@ -54,23 +55,23 @@ namespace GTranslatorAPI
                 t = SplitText(text);
 
             Translation r = null;
-            
-                foreach (var s in t)
-                {
-                    bool eol = s.EndsWith("\r\n");
-                    // should catch time out exception for retry
-                    var sr = _Translate(
-                        sourceLanguage,
-                        targetLanguage,
-                        s
-                        );
-                    if (eol)
-                        sr.TranslatedText += "\r\n";
-                    if (r == null)
-                        r = sr;
-                    else
-                        r.TranslatedText += sr.TranslatedText;
-                }            
+
+            foreach (var s in t)
+            {
+                bool eol = s.EndsWith("\r\n");
+                // should catch time out exception for retry
+                var sr = _Translate(
+                    sourceLanguage,
+                    targetLanguage,
+                    s
+                    );
+                if (eol)
+                    sr.TranslatedText += "\r\n";
+                if (r == null)
+                    r = sr;
+                else
+                    r.TranslatedText += sr.TranslatedText;
+            }
             return r;
         }
 
@@ -92,7 +93,7 @@ namespace GTranslatorAPI
                 t = SplitText(text);
 
             Translation r = null;
-            
+
             // parallelized segments translation
             IEnumerable<Task<Translation>> trTasksQuery =
                 from s in t
@@ -103,14 +104,14 @@ namespace GTranslatorAPI
                 );
             var trTasks = trTasksQuery.ToArray();
             await Task.WhenAll(trTasks);
-            foreach ( var tr in trTasks )
+            foreach (var tr in trTasks)
             {
                 if (r == null)
                     r = tr.Result;
                 else
-                    r.TranslatedText += tr.Result.TranslatedText;                
+                    r.TranslatedText += tr.Result.TranslatedText;
             }
-            
+
             return r;
         }
 
@@ -123,7 +124,7 @@ namespace GTranslatorAPI
         {
             txt = txt.Replace("\r\n", "\n");
             txt = txt.Replace("\n\r", "\n");
-            var t = Split(new string[] { txt } , '.');
+            var t = Split(new string[] { txt }, '.');
             t = Split(t, (char)10);
             t = Split(t, ';');
             t = Split(t, '!');
@@ -139,7 +140,7 @@ namespace GTranslatorAPI
         /// <param name="txts"></param>
         /// <param name="c"></param>
         /// <returns></returns>
-        string[] Split(string[] txts,char c)
+        string[] Split(string[] txts, char c)
         {
             var r = new List<string>();
             foreach (var s in txts)
@@ -154,7 +155,7 @@ namespace GTranslatorAPI
                     if (!string.IsNullOrEmpty(ts))
                         r.Add(ts);
                 }
-            }            
+            }
             return r.ToArray();
         }
 
@@ -196,7 +197,7 @@ namespace GTranslatorAPI
             }
             throw new TranslateException($"Translate error: {r.Item2}");
         }
-        
+
         /// <summary>
         /// translate text from source and target languages codes
         /// </summary>
@@ -218,7 +219,7 @@ namespace GTranslatorAPI
             if (!string.IsNullOrWhiteSpace(r.Item1))
             {
                 var o = JsonConvert.DeserializeObject(r.Item1) as JArray;
-                if (o!=null)
+                if (o != null)
                 {
                     try
                     {
@@ -229,9 +230,10 @@ namespace GTranslatorAPI
                             TranslatedText = translatedText,
                             OriginalText = originalText
                         };
-                    } catch (Exception Ex)
+                    }
+                    catch (Exception Ex)
                     {
-                        throw new TranslateException($"Translate error: invalid result {o}",Ex);
+                        throw new TranslateException($"Translate error: invalid result {o}", Ex);
                     }
                 }
             }
@@ -356,7 +358,7 @@ namespace GTranslatorAPI
         /// </summary>
         /// <param name="o"></param>
         /// <param name="name"></param>
-        void CheckIsNotNull(object o,string name)
+        void CheckIsNotNull(object o, string name)
         {
             if (o == null)
                 throw new ArgumentNullException(name);
