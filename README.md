@@ -67,7 +67,7 @@ let's build a new C# console project for testing the GTranslatorAPI nuget packag
 mkdir MyProject
 cd MyProject
 dotnet new console
-dotnet add package GTranslatorAPI --version 1.0.0
+dotnet add package GTranslatorAPI --version 2.0.0
 code .
 ```
 let's change the default main method in Program.cs, to change its default behavior (output 'Hello world!') by a new one, that **adds a translation of 'Hello world!' to spanish**, using the GTranslatorAPI :
